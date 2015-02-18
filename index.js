@@ -9,10 +9,10 @@ var urlParser = require('./lib/urlParser.js');
 var getTemplateId = require('./lib/templateId.js');
 
 var stub = 'var v$i=$val;\n' +
-    'window.angular.module(["ng"])' +
-    '.run(["$templateCache",function(c){' +
-    'c.put("$key", v$i)' +
-    '}]);';
+        'window.angular.module(["ng"])' +
+        '.run(["$templateCache",function(c){' +
+        'c.put("$key", v$i)' +
+        '}]);';
 
 module.exports = function (source) {
     var query = loaderUtils.parseQuery(this.query),
@@ -29,15 +29,17 @@ module.exports = function (source) {
 
     this.cacheable && this.cacheable();
 
-    source = htmlMinifier.minify(source, {
-        removeComments: true,
-        removeCommentsFromCDATA: true,
-        collapseWhitespace: true,
-        conservativeCollapse: true,
-        preserveLineBreaks: true,
-        removeEmptyAttributes: true,
-        keepClosingSlash: true
-    });
+    if (!query.dontminify) {
+        source = htmlMinifier.minify(source, {
+            removeComments: true,
+            removeCommentsFromCDATA: true,
+            collapseWhitespace: true,
+            conservativeCollapse: true,
+            preserveLineBreaks: true,
+            removeEmptyAttributes: true,
+            keepClosingSlash: true
+        });
+    }
     scripts = scriptParser.parse('root', source, {scripts: []}).scripts;
     source = Array.prototype.slice.apply(source);
 
